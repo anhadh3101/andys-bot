@@ -1,2 +1,10 @@
 # Ignore files related to the API keys
 .env
+
+requirements.txt
+
+package.json
+
+package-lock.json
+
+node_modules
