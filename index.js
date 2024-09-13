@@ -1,7 +1,10 @@
-require("dotenv").config();
-const express = require("express");
-const { generateAuthUrl,  getAccessToken} = require("./oauth_api.js");
+import express from "express";
+import { config } from "dotenv";
+import { generateAuthUrl,  getAccessToken} from "./api_fol/oauth_api.js";
+import { GitHubClient } from "./api_fol/git_api.js";
+import logger from "./development/logger.js";
 
+config();
 const app = express();
 
 const git_creds = {
@@ -14,16 +17,31 @@ const git_creds = {
 }
 
 app.get("/", (request, response) => {
+    logger.info("GET / - Redirecting to GitHub OAuth");
     response.redirect(generateAuthUrl(git_creds));
 });
 
 app.get("/callback", async (request, response) => {
     const code = request.query.code;
-    const access_token = await getAccessToken(git_creds, code);
-    console.log(`Access Token: ${access_token}`);
-    return access_token;
+    try {
+        const access_token = await getAccessToken(git_creds, code);
+        logger.info(`Access token received: ${access_token}`);
+
+        const ghClient = new GitHubClient(access_token);
+        const data = await ghClient.getRepoContent();
+
+        logger.info("Fetched repository content!");
+        response.json(data)
+    } catch (error) {
+        logger.error(error, {stack: error.stack});
+        response.status(500).send("Internal Server Error!")
+    }
 });
 
-app.listen(3000, () => {
-    console.log("Server is running on port 3000!");
+app.listen(8000, () => {
+    logger.info("Server is running on port 8000!");
 });
+
+
+
+

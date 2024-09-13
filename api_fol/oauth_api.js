@@ -5,7 +5,7 @@
  */
 
 // Function
-const generateAuthUrl = (providerConfig) => {
+export const generateAuthUrl = (providerConfig) => {
     const {client_id, redirect_uri, scope, auth_url} = providerConfig;
     const url = new URL(auth_url);
 
@@ -17,7 +17,7 @@ const generateAuthUrl = (providerConfig) => {
 };
 
 // Function
-const getAccessToken = async (providerConfig, code) => {
+export const getAccessToken = async (providerConfig, code) => {
     const {client_id, client_secret, token_url} = providerConfig;
 
     const response = await fetch(token_url, {
@@ -38,10 +38,12 @@ const getAccessToken = async (providerConfig, code) => {
     const data = await response.json();
 
     if (!response.ok) {
-        throw new Error(`Error: ${data.error_description || response.statusText}`);
+        throw new Error(`Error fetching token: ${data.error_description || response.statusText}`);
     }
 
     return data.access_token;
 };
 
-module.exports = { generateAuthUrl, getAccessToken };
+
+
+
