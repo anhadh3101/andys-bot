@@ -18,7 +18,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/callback", async (request, response) => {
-    const code = await request.query.code;
+    const code = request.query.code;
     const access_token = await getAccessToken(git_creds, code);
     console.log(`Access Token: ${access_token}`);
     return access_token;

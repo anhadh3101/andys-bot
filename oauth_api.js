@@ -30,7 +30,7 @@ const getAccessToken = async (providerConfig, code) => {
 
         body: new URLSearchParams({
             client_id: client_id,
-            client_secret: client_secret, // Use CLIENT_SECRET instead of privateKey
+            client_secret: client_secret,
             code: code
         })
     });
@@ -40,7 +40,7 @@ const getAccessToken = async (providerConfig, code) => {
     if (!response.ok) {
         throw new Error(`Error: ${data.error_description || response.statusText}`);
     }
-    console.log(`Access Token: ${data.access_token}`);
+
     return data.access_token;
 };
 
