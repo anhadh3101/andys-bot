@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { generateAuthUrl,  getAccessToken} from "./api_fol/oauth_api.js";
 import { GitHubClient } from "./api_fol/git_api.js";
 import logger from "./development/logger.js";
-import { crawlRootFolder } from "./crawler/crawler.js";
+import { initializeCrawler } from "./crawler/crawler.js";
 
 config();
 const app = express();
@@ -30,7 +30,7 @@ app.get("/callback", async (request, response) => {
 
         const ghClient = new GitHubClient(access_token);
         const data = await ghClient.getRepoContent();
-        crawlRootFolder(data);
+        await initializeCrawler(data);
         logger.info("Fetched repository content!");
         response.json(data)
     } catch (error) {
